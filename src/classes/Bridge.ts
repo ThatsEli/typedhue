@@ -1,7 +1,9 @@
 
 import * as http from 'http';
-import * as request from 'request';
+// import * as request from 'request';
+const request = require('request');
 import { StateCreator } from './StateCreator';
+import { State } from '../../lib/interfaces/State';
 
 export class Bridge {
 
@@ -38,19 +40,56 @@ export class Bridge {
 
     }
 
-
+    /**
+     * get all lights connected to the bridges
+     * @param callback callback to be called with the lights
+     */
     public getLights(callback: Function): void {
         this.doReq('/api/_USERNAME_/lights', 'GET', '{}', (err: any, res: any, body: string) => {
             if(res.statusCode == 200) {
                 callback(JSON.parse(body));
+            } else {
+                callback({});
             }
         })
     }
 
-    public switchLight(id: string, state: any, callback: Function): void {
+    /**
+     * get all groups/rooms knows to the bridge
+     * @param callback callback o be called with the groups
+     */
+    public getGroups(callback: Function): void {
+        this.doReq('/api/_USERNAME_/groups', 'GET', '', (err: any, res: any, body: string) => {
+            if(res.statusCode == 200) {
+                callback(JSON.parse(body));
+            } else {
+                callback({});
+            }
+        });
+    }
+
+    /**
+     * 
+     * @param id id of the light
+     * @param state new state of the light
+     * @param callback callback callback to be called with success or not
+     */
+    public setLightState(id: string, state: State, callback: Function): void {
         this.doReq('/api/_USERNAME_/lights/' + id + '/state', 'PUT', JSON.stringify(state), (err: any, res: any, body: string) => {
             if(res.statusCode == 200) {
                 callback(true);
+            } else {
+                callback(false);
+            }
+        });
+    }
+
+    public setGroupState(id: string, state: State, callback: Function): void {
+        this.doReq('/api/_USERNAME_/groups/' + id + '/action', 'PUT', JSON.stringify(state), (err: any, res: any, body: string) => {
+            if(res.statusCode == 200) {
+                callback(true);
+            } else {
+                callback(false);
             }
         });
     }
@@ -58,43 +97,14 @@ export class Bridge {
 
     private doReq(path: string, method: string, body: string, callback: Function): void {
         path = path.replace('_USERNAME_', this.username);
-        // TODO: do this waaaay smarter
-        switch (method) {
-            case 'POST':
-                request.post({
-                    headers: {},
-                    url: this.apiGateway + path,
-                    body: body
-                }, (error: Error, response: any, body: string) => {
-                    if(callback) {
-                        callback(error, response, body);
-                    }
-                });
-                break;
-            case 'GET':
-                request.get({
-                    headers: {},
-                    url: this.apiGateway + path
-                }, (error: Error, response: any, body: string) => {
-                    if(callback) {
-                        callback(error, response, body);
-                    }
-                });
-                break;
-            case 'PUT':
-                request.put({
-                    headers: {},
-                    url: this.apiGateway + path,
-                    body: body
-                }, (error: Error, response: any, body: string) => {
-                    if(callback) {
-                        callback(error, response, body);
-                    }
-                });
-                break;
-            default:
-                break;
-        }
+        request({
+            uri: this.apiGateway + path,
+            method: method,
+            body: body,
+            headers: {}
+        }, (error: Error, response: any, body: string) => {
+            callback(error, response, body);
+        } );
 
     }
 

@@ -11,4 +11,7 @@ export interface State {
     effect?: string;
     transitiontime?: number;
 
+    // groups/rooms //
+    scene?: string;
+
 }
