@@ -1,7 +1,5 @@
-
-import * as http from 'http';
-// import * as request from 'request';
 const request = require('request');
+import * as http from 'http';
 import { StateCreator } from './StateCreator';
 import { State } from '../../lib/interfaces/State';
 
@@ -69,10 +67,10 @@ export class Bridge {
     }
 
     /**
-     * 
+     * set the state of a light
      * @param id id of the light
      * @param state new state of the light
-     * @param callback callback callback to be called with success or not
+     * @param callback callback to be called with success or not
      */
     public setLightState(id: string, state: State, callback: Function): void {
         this.doReq('/api/_USERNAME_/lights/' + id + '/state', 'PUT', JSON.stringify(state), (err: any, res: any, body: string) => {
@@ -84,6 +82,12 @@ export class Bridge {
         });
     }
 
+    /**
+     * set the state of a group
+     * @param id id of the group
+     * @param state new state of the goup/their lights
+     * @param callback callback to be called with success or not 
+     */
     public setGroupState(id: string, state: State, callback: Function): void {
         this.doReq('/api/_USERNAME_/groups/' + id + '/action', 'PUT', JSON.stringify(state), (err: any, res: any, body: string) => {
             if(res.statusCode == 200) {

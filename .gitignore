@@ -2,3 +2,4 @@ node_modules/
 examples/test.js
 lib/*
 package-lock.json
+documentation/
