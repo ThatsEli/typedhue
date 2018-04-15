@@ -1,0 +1,23 @@
+{
+  "name": "typedhue",
+  "version": "1.0.0",
+  "description": "A PhillipsHue libary written in Typescript",
+  "main": "lib/bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "build-watch": "tsc --watch"
+  },
+  "keywords": [
+    "phillipshue",
+    "phillips",
+    "hue",
+    "typescript",
+    "libary"
+  ],
+  "author": "ThatsEli <public@thatseliyt.de> (http://thatseliyt.de)",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^2.8.1"
+  }
+}
